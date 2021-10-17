@@ -1,11 +1,14 @@
 import pygame
+from pygame import sprite
 import paleta
 import bola
+import objeto
 
 
 class Pong:
     # constantes juego
     _JUEGO_VENTANA_NOMBRE = 'The REAL PONG RCTM!'
+    _JUEGO_FPS = 60
     # constantes pantalla
     _PANTALLA_ALTURA = 480
     _PANTALLA_ANCHO = 720
@@ -63,6 +66,11 @@ class Pong:
             self._BOLA_DIMEN
         )
 
+        self.cierra = objeto.Objeto()
+        pygame.transform.scale(self.cierra.image,(10,10))
+        self.sprites = pygame.sprite.Group()
+        self.sprites.add(self.cierra)
+
     def bucle_principal(self):
         pausado = False
         p = 0
@@ -73,7 +81,7 @@ class Pong:
         color = (255, 255, 255)
         ancho = 10
         while True:
-            pygame.time.Clock().tick(60)
+            pygame.time.Clock().tick(self._JUEGO_FPS)
             pressed = pygame.key.get_pressed()
             presionando_j1 = pressed[self.jugador1.tecla_bajar] or pressed[self.jugador1.tecla_subir]
             presionando_j2 = pressed[self.jugador2.tecla_bajar] or pressed[self.jugador2.tecla_subir]
@@ -117,15 +125,17 @@ class Pong:
             elif self.bola.colliderect(self.jugador2):
                 self.bola.rebote_por_paleta()
                 self.jugador2.golpe_realizado()
-
+            self.sprites.update()
+            self.sprites.draw(self.pantalla)
             # Zona dibujo, se dibuja el frame
             pygame.draw.line(self.pantalla, color, (self.pantalla_centro_h,
-                             self._PANTALLA_ALTURA), (self.pantalla_centro_h, 0),ancho)
+                             self._PANTALLA_ALTURA), (self.pantalla_centro_h, 0), ancho)
             pygame.draw.rect(self.pantalla, (255, 255, 255), self.bola)
             pygame.draw.rect(self.pantalla, (255, 255, 255), self.jugador1)
             pygame.draw.rect(self.pantalla, (255, 255, 255), self.jugador2)
             pygame.draw.rect(self.pantalla, (255, 255, 255), self.bola)
             pygame.display.update()
+
 
 if __name__ == '__main__':
     juego = Pong()

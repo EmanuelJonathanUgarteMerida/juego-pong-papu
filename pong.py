@@ -2,6 +2,7 @@ import pygame
 import paleta
 import bola
 
+
 class Pong:
     # constantes juego
     _JUEGO_VENTANA_NOMBRE = 'The REAL PONG RCTM!'
@@ -63,18 +64,42 @@ class Pong:
         )
 
     def bucle_principal(self):
-        pygame.key.set_repeat(20)
+        pausado = False
+        p = 0
+        teclas_j1 = (self.jugador1.tecla_subir, self.jugador1.tecla_bajar)
+        teclas_j2 = (self.jugador2.tecla_bajar, self.jugador2.tecla_subir)
+        tecla_j1 = ''
+        tecla_j2 = ''
+        color = (255, 255, 255)
+        ancho = 10
         while True:
+            pygame.time.Clock().tick(60)
+            pressed = pygame.key.get_pressed()
+            presionando_j1 = pressed[self.jugador1.tecla_bajar] or pressed[self.jugador1.tecla_subir]
+            presionando_j2 = pressed[self.jugador2.tecla_bajar] or pressed[self.jugador2.tecla_subir]
+
             for evento in pygame.event.get():
                 # Zona lógica
                 if evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_ESCAPE:
                         return
-                    else:
-                        self.jugador1.muevete(evento.key)
-                        self.jugador2.muevete(evento.key)
+                    if evento.key == pygame.K_SPACE:
+                        pausado = not pausado
+                        pass
+                    elif evento.key in teclas_j1:
+                        tecla_j1 = evento.key
+                    elif evento.key in teclas_j2:
+                        tecla_j2 = evento.key
+
+            if presionando_j1:
+                self.jugador1.muevete(tecla_j1)
+
+            if presionando_j2:
+                self.jugador2.muevete(tecla_j2)
+
             self.pantalla.fill((255, 0, 142))
             espunto = self.bola.muevete()
+            # Control puntaje
             if espunto == 0:
                 self.jugador2.suma_punto()
             elif espunto == self._PANTALLA_ANCHO:
@@ -85,6 +110,7 @@ class Pong:
             self.pantalla.blit(self.jugador2.nombre_jugador_render(),
                                self.jugador2.nombre_jugador_center(self._PANTALLA_ANCHO, self._PANTALLA_ANCHO/2, 30))
 
+            # Control de colisión
             if self.bola.colliderect(self.jugador1):
                 self.bola.rebote_por_paleta()
                 self.jugador1.golpe_realizado()
@@ -92,16 +118,14 @@ class Pong:
                 self.bola.rebote_por_paleta()
                 self.jugador2.golpe_realizado()
 
-            # Zona dibujo
-            pygame.draw.line(self.pantalla, (255, 255, 255),
-                             (self.pantalla_centro_h, self._PANTALLA_ALTURA), (self.pantalla_centro_h, 0))
+            # Zona dibujo, se dibuja el frame
+            pygame.draw.line(self.pantalla, color, (self.pantalla_centro_h,
+                             self._PANTALLA_ALTURA), (self.pantalla_centro_h, 0),ancho)
             pygame.draw.rect(self.pantalla, (255, 255, 255), self.bola)
             pygame.draw.rect(self.pantalla, (255, 255, 255), self.jugador1)
             pygame.draw.rect(self.pantalla, (255, 255, 255), self.jugador2)
             pygame.draw.rect(self.pantalla, (255, 255, 255), self.bola)
-
             pygame.display.update()
-            pygame.time.Clock().tick(60)
 
 
 if __name__ == '__main__':

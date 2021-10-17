@@ -127,7 +127,6 @@ class Pong:
             pygame.draw.rect(self.pantalla, (255, 255, 255), self.bola)
             pygame.display.update()
 
-
 if __name__ == '__main__':
     juego = Pong()
     juego.bucle_principal()

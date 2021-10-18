@@ -3,13 +3,13 @@ Versión del clásico juego de Atari PONG con pygame, el cual será una versión
 
 - Sprites : https://www.gameart2d.com/freebies.html
 
-##- Clase Objeto:
+## - Clase Objeto:
   - imagen
   - sonido
   - velocidad
   - tipo_animación
 
-##- Clase Paleta:
+## - Clase Paleta:
   - nombre
   - imagen
   - sonido

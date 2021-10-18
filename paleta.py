@@ -23,13 +23,14 @@ class Paleta (pygame.Rect):
         ancho /= 2
         return self.nombre_render.get_rect(center=(ancho/2+desde, altura))
 
-    def muevete(self, key):
-        if key == self.tecla_subir:
+    def muevete(self):
+        if pygame.key.get_pressed()[self.tecla_subir]:
+        #if key == self.tecla_subir:
             self.y -= self.velocidad
             if self.y < 0:
                 self.y = 0
-
-        elif key == self.tecla_bajar:
+        elif pygame.key.get_pressed()[self.tecla_bajar]:
+        #elif key == self.tecla_bajar:
             self.y += self.velocidad
             if self.y > self.altura_pantalla-self.height:
                 self.y = self.altura_pantalla-self.height

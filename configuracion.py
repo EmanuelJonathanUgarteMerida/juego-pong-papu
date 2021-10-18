@@ -7,7 +7,6 @@ _PANTALLA_ANCHO = 720
 _PANTALLA_MARGEN_LATERAL = 40
 pantalla_centro_h = _PANTALLA_ANCHO/2
 pantalla_centro_v = _PANTALLA_ALTURA/2
-_PANTALLA_CLOCK = pygame.time.Clock()
 
 # constantes paleta
 _PALETA_ANCHO = 10

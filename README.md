@@ -1,5 +1,5 @@
 # bz9-pong
-Versión del clásico juego de Atari PONG con pygame, el cual será una versión animada sin filtros para +18
+Versión del clásico juego de Atari PONG con pygame.
 
 - Sprites : https://www.gameart2d.com/freebies.html
 

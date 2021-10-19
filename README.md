@@ -17,5 +17,3 @@ Versión del clásico juego de Atari PONG con pygame.
   - puntos
   - golpes
 
-## Clase Pong
-

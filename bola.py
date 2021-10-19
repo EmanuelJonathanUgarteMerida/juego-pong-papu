@@ -14,8 +14,8 @@ class Bola (pygame.Rect):
         pantalla = pygame.display.get_surface()
         (ancho, alto) = pantalla.get_size()
 
-        self.x = ancho//2-self.width
-        self.y = alto//2-self.height
+        self.x = ancho//2-self.width//2
+        self.y = alto//2-self.height//2
 
         self.velocidad_x = random.randint(-3, 3)
         self.velocidad_y = -self.velocidad_y

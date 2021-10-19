@@ -2,16 +2,22 @@ import pygame
 
 
 class Paleta (pygame.Rect):
-    def __init__(self, nombre, subir, bajar, velocidad, altura_pantalla, *args, **kwargs):
-        super(Paleta, self).__init__(*args, **kwargs)
-        self.tecla_subir = subir
-        self.tecla_bajar = bajar
+    _ANCHO = 10
+    _ALTO = 40
+
+    def __init__(self, nombre, teclas, velocidad, posicion_x):
+        super(Paleta, self).__init__(posicion_x, 0, self._ANCHO, self._ALTO)
+        self.tecla_subir = teclas[0]
+        self.tecla_bajar = teclas[1]
         self.velocidad = velocidad
-        self.altura_pantalla = altura_pantalla
+        self.altura_pantalla = pygame.display.get_surface().get_height()
         self.golpe = 0
         self.puntos = 0
         self.nombre = nombre
         self.nombre_render = self.nombre_jugador_render()
+        # Init objeto
+        self.x = posicion_x
+        self.y = self.altura_pantalla/2-self.height/2
 
     def nombre_jugador_render(self):
         pygame.font.init()

@@ -38,50 +38,35 @@ class Pong:
         pygame.font.init()
 
         self.jugador1 = paleta.Paleta(
-            'Jugador1',
-            pygame.K_a,
-            pygame.K_z,
+            'Jugador1', (pygame.K_a, pygame.K_z),
             self._VELOCIDAD,
-            self._PANTALLA_ALTURA,
-            self._PANTALLA_MARGEN_LATERAL,
-            self.paleta_centro_v,
-            self._PALETA_ANCHO,
-            self._PALETA_ALTURA)
+            self._PANTALLA_MARGEN_LATERAL)
 
         self.jugador2 = paleta.Paleta(
-            'Jugador2',
-            pygame.K_UP,
-            pygame.K_DOWN,
+            'Jugador2', (pygame.K_UP, pygame.K_DOWN),
             self._VELOCIDAD,
-            self._PANTALLA_ALTURA,
-            self._PANTALLA_ANCHO-self._PALETA_ANCHO-self._PANTALLA_MARGEN_LATERAL,
-            self.paleta_centro_v,
-            self._PALETA_ANCHO,
-            self._PALETA_ALTURA)
+            self._PANTALLA_ANCHO-self._PALETA_ANCHO-self._PANTALLA_MARGEN_LATERAL)
 
-        self.bola = bola.Bola(
-            self._VELOCIDAD,
-            self._BOLA_DIMEN
-        )
+        self.bola = bola.Bola(self._VELOCIDAD, self._BOLA_DIMEN)
 
         self.marcador = marcador.Marcador('white')
 
     def colision_bordes(self):
         hay_ganador = False
         texto = ''
-        algo=[False]
+        algo = [False]
         if self.bola.y >= self._PANTALLA_ALTURA-self.bola.height or self.bola.y <= 0:
             self.bola.velocidad_y = -self.bola.velocidad_y
         elif self.bola.x <= 0:
             self.jugador2.suma_punto()
             if self.jugador2.puntos == 2:
-                algo[0]=True
+                algo[0] = True
                 algo.append(self.ganador('Jugador 2'))
             self.bola.iniciar()
         elif self.bola.x >= self._PANTALLA_ANCHO-self.bola.width:
             self.jugador1.suma_punto()
             if self.jugador1.puntos == 2:
-                algo[0]=True
+                algo[0] = True
                 algo.append(self.ganador('Jugador 1'))
             self.bola.iniciar()
         return algo
@@ -89,7 +74,7 @@ class Pong:
     def ganador(self, jugador):
         mensaje = pygame.font.SysFont('arial', 50)
         texto = pygame.font.Font.render(
-            mensaje, f'Ha ganado jugador {jugador}', True, (255, 255,255))
+            mensaje, f'Ha ganado jugador {jugador}', True, (255, 255, 255))
         return texto
 
     def colision_paleta(self):
@@ -100,24 +85,27 @@ class Pong:
     def bucle_principal(self):
         blanco = (255, 255, 255)
         ancho = 10
+        gano=False
+        hay_ganador=(False,0)
         while True:
             for evento in pygame.event.get():
                 # Zona lógica
                 if evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_ESCAPE:
                         return
-            self.jugador1.muevete()
-            self.jugador2.muevete()
-
-            self.bola.muevete()
-            hay_ganador = self.colision_bordes()
-            self.colision_paleta()
-
-            self.pantalla.fill((255, 0, 142))
+            
             if hay_ganador[0]:
                 # actualizamos marcador
                 self.pantalla.blit(hay_ganador[1], (250, 250))
             else:
+                self.jugador1.muevete()
+                self.jugador2.muevete()
+
+                self.bola.muevete()
+                hay_ganador = self.colision_bordes()
+                self.colision_paleta()
+
+                self.pantalla.fill((255, 0, 142))
                 self.pantalla.blit(self.marcador.pintar_marcador(
                     (1, self.jugador1.puntos)), self.marcador.posicion)
                 self.pantalla.blit(self.marcador.pintar_marcador(

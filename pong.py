@@ -61,9 +61,6 @@ class Pong:
 
         self.bola = bola.Bola(
             self._VELOCIDAD,
-            self.pelota_centro_h,
-            self.pelota_centro_v,
-            self._BOLA_DIMEN,
             self._BOLA_DIMEN
         )
 
@@ -75,13 +72,12 @@ class Pong:
     def colision_bordes(self):
         if self.bola.y >= self._PANTALLA_ALTURA-self.bola.height or self.bola.y <= 0:
             self.bola.velocidad_y = -self.bola.velocidad_y
-
-        if self.bola.x <= 0 or self.bola.x >= self._PANTALLA_ANCHO-self.bola.width:
-            print("punto")
-            self.bola.x = self.pantalla_centro_h
-            self.bola.y = self.pantalla_centro_v
-            self.bola.velocidad_y = random.randint(2, 5)
-            self.bola.velocidad_x = -self.bola.velocidad_x
+        elif self.bola.x <= 0:
+            self.jugador2.suma_punto()
+            self.bola.iniciar()
+        elif self.bola.x >= self._PANTALLA_ANCHO-self.bola.width:
+            self.jugador1.suma_punto()
+            self.bola.iniciar()
 
     def colision_paleta(self):
         if self.jugador1.colliderect(self.bola) or self.jugador2.colliderect(self.bola):
@@ -100,21 +96,10 @@ class Pong:
             self.jugador1.muevete()
             self.jugador2.muevete()
 
-            #espunto = self.bola.muevete()
             self.bola.muevete()
-            # Control puntaje
-            # if espunto == 0:
-            #    self.jugador2.suma_punto()
-            # elif espunto == self._PANTALLA_ANCHO:
-            #    self.jugador1.suma_punto()
-
             self.colision_bordes()
             self.colision_paleta()
-            # Control de colisión
 
-            # self.sprites.update()
-            # self.sprites.draw(self.pantalla)
-            # Zona dibujo, se dibuja el frame
             self.pantalla.fill((255, 0, 142))
             self.pantalla.blit(self.jugador1.nombre_jugador_render(),
                                self.jugador1.nombre_jugador_center(self._PANTALLA_ANCHO, 0, 30))

@@ -1,5 +1,6 @@
 import pygame
 
+
 class Paleta (pygame.Rect):
     def __init__(self, nombre, subir, bajar, velocidad, altura_pantalla, *args, **kwargs):
         super(Paleta, self).__init__(*args, **kwargs)
@@ -25,12 +26,12 @@ class Paleta (pygame.Rect):
 
     def muevete(self):
         if pygame.key.get_pressed()[self.tecla_subir]:
-        #if key == self.tecla_subir:
+            # if key == self.tecla_subir:
             self.y -= self.velocidad
             if self.y < 0:
                 self.y = 0
         elif pygame.key.get_pressed()[self.tecla_bajar]:
-        #elif key == self.tecla_bajar:
+            # elif key == self.tecla_bajar:
             self.y += self.velocidad
             if self.y > self.altura_pantalla-self.height:
                 self.y = self.altura_pantalla-self.height

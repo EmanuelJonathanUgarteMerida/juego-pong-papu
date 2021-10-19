@@ -4,6 +4,7 @@ from pygame import sprite
 import paleta
 import bola
 import objeto
+import marcador
 
 
 class Pong:
@@ -27,8 +28,6 @@ class Pong:
 
     # constantes bola
     _BOLA_DIMEN = 20
-    pelota_centro_v = pantalla_centro_v-_BOLA_DIMEN/2
-    pelota_centro_h = pantalla_centro_h-_BOLA_DIMEN/2
 
     def __init__(self):
         pygame.init()
@@ -36,6 +35,7 @@ class Pong:
         self.pantalla = pygame.display.set_mode(
             (self._PANTALLA_ANCHO, self._PANTALLA_ALTURA))
         pygame.display.set_caption(self._JUEGO_VENTANA_NOMBRE)
+        pygame.font.init()
 
         self.jugador1 = paleta.Paleta(
             'Jugador1',
@@ -64,20 +64,33 @@ class Pong:
             self._BOLA_DIMEN
         )
 
-        self.cierra = objeto.Objeto()
-        pygame.transform.scale(self.cierra.image, (10, 10))
-        self.sprites = pygame.sprite.Group()
-        self.sprites.add(self.cierra)
+        self.marcador = marcador.Marcador('white')
 
     def colision_bordes(self):
+        hay_ganador = False
+        texto = ''
+        algo=[False]
         if self.bola.y >= self._PANTALLA_ALTURA-self.bola.height or self.bola.y <= 0:
             self.bola.velocidad_y = -self.bola.velocidad_y
         elif self.bola.x <= 0:
             self.jugador2.suma_punto()
+            if self.jugador2.puntos == 2:
+                algo[0]=True
+                algo.append(self.ganador('Jugador 2'))
             self.bola.iniciar()
         elif self.bola.x >= self._PANTALLA_ANCHO-self.bola.width:
             self.jugador1.suma_punto()
+            if self.jugador1.puntos == 2:
+                algo[0]=True
+                algo.append(self.ganador('Jugador 1'))
             self.bola.iniciar()
+        return algo
+
+    def ganador(self, jugador):
+        mensaje = pygame.font.SysFont('arial', 50)
+        texto = pygame.font.Font.render(
+            mensaje, f'Ha ganado jugador {jugador}', True, (255, 255,255))
+        return texto
 
     def colision_paleta(self):
         if self.jugador1.colliderect(self.bola) or self.jugador2.colliderect(self.bola):
@@ -97,20 +110,25 @@ class Pong:
             self.jugador2.muevete()
 
             self.bola.muevete()
-            self.colision_bordes()
+            hay_ganador = self.colision_bordes()
             self.colision_paleta()
 
             self.pantalla.fill((255, 0, 142))
-            self.pantalla.blit(self.jugador1.nombre_jugador_render(),
-                               self.jugador1.nombre_jugador_center(self._PANTALLA_ANCHO, 0, 30))
-            self.pantalla.blit(self.jugador2.nombre_jugador_render(),
-                               self.jugador2.nombre_jugador_center(self._PANTALLA_ANCHO, self._PANTALLA_ANCHO/2, 30))
+            if hay_ganador[0]:
+                # actualizamos marcador
+                self.pantalla.blit(hay_ganador[1], (250, 250))
+            else:
+                self.pantalla.blit(self.marcador.pintar_marcador(
+                    (1, self.jugador1.puntos)), self.marcador.posicion)
+                self.pantalla.blit(self.marcador.pintar_marcador(
+                    (2, self.jugador2.puntos)), self.marcador.posicion)
+                pygame.draw.rect(self.pantalla, (blanco), self.bola)
+                pygame.draw.rect(self.pantalla, (blanco), self.jugador1)
+                pygame.draw.rect(self.pantalla, (blanco), self.jugador2)
+                pygame.draw.rect(self.pantalla, (blanco), self.bola)
+
             pygame.draw.line(self.pantalla, blanco, (self.pantalla_centro_h,
                              self._PANTALLA_ALTURA), (self.pantalla_centro_h, 0), ancho)
-            pygame.draw.rect(self.pantalla, (blanco), self.bola)
-            pygame.draw.rect(self.pantalla, (blanco), self.jugador1)
-            pygame.draw.rect(self.pantalla, (blanco), self.jugador2)
-            pygame.draw.rect(self.pantalla, (blanco), self.bola)
             pygame.display.update()
             self.reloj.tick(self._JUEGO_FPS)
 

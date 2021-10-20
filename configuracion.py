@@ -1,6 +1,7 @@
 import pygame
 # constantes juego
-_JUEGO_VENTANA_NOMBRE = 'The REAL PONG RCTM!'
+_JUEGO_NOMBRE = 'The REAL PONG RCTM!'
+_PARA_EMPEZAR = 'Para empezar presiona la tecla <ESPACIO>'
 _JUEGO_FPS = 60
 _VELOCIDAD = 5
 _ANCHO_LINEA = 5
@@ -20,9 +21,6 @@ paleta_centro_v = pantalla_centro_v-_PALETA_ALTO/2
 
 # constantes bola
 _BOLA_DIMEN = 20
-
-# marcador
-_COLOR_TXT_MARCADOR = 'white'
 
 _BLANCO = (255, 255, 255)
 _NEGRO = (0, 0, 0)

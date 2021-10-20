@@ -7,7 +7,8 @@ class Bola (pygame.Rect):
     def __init__(self,  velocidad, dimensiones):
         super(Bola, self).__init__(0, 0, dimensiones, dimensiones)
         self.velocidad_x = velocidad
-        self.velocidad_y = velocidad-random.randint(2, 5)
+        #self.velocidad_y = velocidad-random.randint(2, 5)
+		self.velocidad_y= -velocidad
         self.iniciar()
 
     def iniciar(self):
@@ -17,7 +18,8 @@ class Bola (pygame.Rect):
         self.x = ancho//2-self.width//2
         self.y = alto//2-self.height//2
 
-        self.velocidad_x = random.randint(-3, 3)
+        #self.velocidad_x = random.randint(-3, 3)
+		self.velocidad_x = -self.velocidad_x
         self.velocidad_y = -self.velocidad_y
 
     def muevete(self):

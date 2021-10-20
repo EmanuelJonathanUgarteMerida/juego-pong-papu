@@ -1,4 +1,5 @@
 import pygame
+import configuracion as cf
 
 
 class Marcador:
@@ -7,11 +8,11 @@ class Marcador:
     margen_hor = 20
 
     def __init__(self, color):
-        self.letra_marcador = pygame.font.SysFont('arial', 50)
+        self.letra_marcador = pygame.font.SysFont(cf._ARIAL, 50)
         self.centro = pygame.display.get_surface().get_width()/2
         self.color = color
 
-    def pintar_marcador(self, jugador):
+    def pintar(self, jugador):
         texto = pygame.font.Font.render(
             self.letra_marcador, str(jugador[1]), True, self.color)
         ancho_texto = texto.get_width()

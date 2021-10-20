@@ -1,8 +1,9 @@
+import pygame
 # constantes juego
 _JUEGO_VENTANA_NOMBRE = 'The REAL PONG RCTM!'
 _JUEGO_FPS = 60
 _VELOCIDAD = 5
-_ANCHO_LINEA=10
+_ANCHO_LINEA = 5
 # constantes pantalla
 _PANTALLA_ALTURA = 480
 _PANTALLA_ANCHO = 720
@@ -15,15 +16,16 @@ _PANTALLA_CLOCK = pygame.time.Clock()
 _PALETA_ANCHO = 10
 _PALETA_ALTO = 40
 
-paleta_centro_v = pantalla_centro_v-_PALETA_ALTURA/2
+paleta_centro_v = pantalla_centro_v-_PALETA_ALTO/2
 
 # constantes bola
 _BOLA_DIMEN = 20
 
-#marcador
-_COLOR_TXT_MARCADOR='white'
+# marcador
+_COLOR_TXT_MARCADOR = 'white'
 
-_BLANCO=(255,255,255)
-_ARIAL='arial'
+_BLANCO = (255, 255, 255)
+_NEGRO = (0, 0, 0)
+_ARIAL = 'arial'
 
-_LIMITE_MARCADOR=9
+_LIMITE_MARCADOR = 2

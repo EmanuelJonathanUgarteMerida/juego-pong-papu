@@ -18,8 +18,8 @@ class Marcador:
         ancho_texto = texto.get_width()
 
         if jugador[0] == 1:
-            self.posicion = (self.centro+self.margen_hor, self.margen_sup)
-        elif jugador[0] == 2:
             self.posicion = (self.centro-ancho_texto -
                              self.margen_hor, self.margen_sup)
+        elif jugador[0] == 2:
+            self.posicion = (self.centro + self.margen_hor, self.margen_sup)
         return texto

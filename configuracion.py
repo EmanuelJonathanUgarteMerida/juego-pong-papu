@@ -3,7 +3,8 @@ import pygame
 JUEGO_NOMBRE = 'The REAL PONG RCTM!'
 PARA_EMPEZAR = 'Para empezar presiona la tecla <ESPACIO>'
 JUEGO_FPS = 60
-VELOCIDAD = 5
+VELOCIDAD_B = 5
+VELOCIDAD_P = 5
 ANCHO_LINEA = 5
 # constantes pantalla
 PANTALLA_ALTURA = 480

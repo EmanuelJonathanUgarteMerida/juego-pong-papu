@@ -1,13 +1,13 @@
 import pygame as pg
-from configuracion import VELOCIDAD, BOLA_DIMEN, PALETA_ANCHO, PALETA_ALTO, PANTALLA_ALTURA, VELOCIDAD
+from configuracion import BOLA_DIMEN, PALETA_ANCHO, PALETA_ALTO, PANTALLA_ALTURA, VELOCIDAD_B, VELOCIDAD_P
 
 
 class Bola (pg.Rect):
     def __init__(self):
         super(Bola, self).__init__(0, 0, BOLA_DIMEN, BOLA_DIMEN)
-        self.velocidad_x = VELOCIDAD
+        self.velocidad_x = VELOCIDAD_B
         #self.velocidad_y = velocidad-random.randint(2, 5)
-        self.velocidad_y = -VELOCIDAD
+        self.velocidad_y = -VELOCIDAD_B
         self.iniciar()
 
     def iniciar(self):
@@ -30,7 +30,7 @@ class Paleta (pg.Rect):
     def __init__(self, nombre, teclas, pos_x):
         super(Paleta, self).__init__(pos_x, 0, PALETA_ANCHO, PALETA_ALTO)
         self.teclas = teclas
-        self.velocidad = VELOCIDAD
+        self.velocidad = VELOCIDAD_P
         self.golpe = 0
         self.puntos = 0
         self.nombre = nombre

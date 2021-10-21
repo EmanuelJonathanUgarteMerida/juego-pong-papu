@@ -1,3 +1,4 @@
+import os
 import pygame as pg
 from configuracion import BOLA_DIMEN, PALETA_ANCHO, PALETA_ALTO, PANTALLA_ALTURA, VELOCIDAD_B, VELOCIDAD_P
 

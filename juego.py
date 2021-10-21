@@ -7,6 +7,7 @@ class Juego():
     def __init__(self):
         pg.init()
         pg.font.init()
+        pg.mixer.init()
         self.pantalla = pg.display.set_mode(
             (PANTALLA_ANCHO, PANTALLA_ALTURA))
         self.escenas = [

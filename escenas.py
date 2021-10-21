@@ -22,26 +22,26 @@ class Portada(Escena):
         self.texto_jugador_2 = ''
         self.jugadores = 0
         self.logo = pg.image.load(os.path.join(
-            'resources', 'images', 'logo.png'))
+            'resources', 'images', 'logo.jpg'))
+        self.logo=pg.transform.scale(self.logo,(PANTALLA_ANCHO,PANTALLA_ALTURA))
         self.logo_pos = (PANTALLA_ANCHO//2-self.logo.get_width()//2,
                          PANTALLA_ALTURA//2-self.logo.get_height()//2)
+ 
         fuente = pg.font.Font(os.path.join(
-            'resources', 'fonts', 'Pacifico-Regular.ttf'), 20)
-        self.texto_inicio = fuente.render(PARA_EMPEZAR, True, 'green')
-        self.texto_inicio_rect = self.texto_inicio.get_rect()
-        self.texto_inicio_rect.midtop = (
-            PANTALLA_ANCHO/2, PANTALLA_ALTURA/2+50)
-
-        fuente = pg.font.Font(os.path.join(
-            'resources', 'fonts', 'Pacifico-Regular.ttf'), 60)
+            'resources', 'fonts', 'SwipeRaceDemo.ttf'), 50)
         self.texto_jugador_1 = fuente.render('1', True, 'white')
         self.texto_jugador_1_rect = self.texto_jugador_1.get_rect()
         self.texto_jugador_1_rect.midright = (
-            PANTALLA_ANCHO/2-20, PANTALLA_ALTURA/2)
+            PANTALLA_ANCHO/2-50, PANTALLA_ALTURA/2)
         self.texto_jugador_2 = fuente.render('2', True, 'white')
         self.texto_jugador_2_rect = self.texto_jugador_2.get_rect()
         self.texto_jugador_2_rect.midleft = (
-            PANTALLA_ANCHO/2+20, PANTALLA_ALTURA/2)
+            PANTALLA_ANCHO/2+50, PANTALLA_ALTURA/2)
+		
+        fuente = pg.font.Font(os.path.join('resources', 'fonts', 'SwipeRaceDemo.ttf'), 10)
+        self.texto_inicio = fuente.render(PARA_EMPEZAR, True, 'green')
+        self.texto_inicio_rect = self.texto_inicio.get_rect()
+        self.texto_inicio_rect.midbottom = (PANTALLA_ANCHO/2, PANTALLA_ALTURA-20)
 
     def bucle_principal(self):
         while True:
@@ -81,7 +81,7 @@ class Partida(Escena):
         self.fondo_rect = self.fondo.get_rect()
         self.fondo_rect.center = (PANTALLA_ANCHO/2, PANTALLA_ALTURA/2)
         self.fuente = pg.font.Font(os.path.join(
-            'resources', 'fonts', 'Pacifico-Regular.ttf'), 20)
+            'resources', 'fonts', 'SwipeRaceDemo.ttf'), 20)
 
         self.jugador1 = Paleta(
             'Jugador1', (pygame.K_a, pygame.K_z), PANTALLA_MARGEN_LATERAL)
@@ -123,6 +123,9 @@ class Partida(Escena):
             self.jugador1.muevete()
             self.jugador2.muevete()
             self.bola.muevete()
+			
+            if self.jugador1.puntos == LIMITE_MARCADOR or self.jugador2.puntos == LIMITE_MARCADOR:
+                return
 
             # comprobamos las coliciones
             self.colision_paleta()
@@ -153,6 +156,23 @@ class Partida(Escena):
 class Resumen(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
+        fuente = pg.font.Font(os.path.join('resources','fonts','SwipeRaceDemo.ttf'),20)
+        self.estadisticas=fuente.render('Estadísticas',True,BLANCO)
+        self.estadisticas.get_rect().midtop=(PALETA_ANCHO/2,20)
+	
+    def bucle_principal(self):
+        while True:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
+                elif event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        pg.quit()
+			
+            self.pantalla.fill((0,0,0))
+            self.pantalla.blit(self.estadisticas,self.estadisticas.get_rect())
+            pg.display.flip()
+		
 
 
 class Marcador:
@@ -162,7 +182,7 @@ class Marcador:
 
     def __init__(self):
         self.fuente = pg.font.Font(os.path.join(
-            'resources', 'fonts', 'Pacifico-Regular.ttf'), 20)
+            'resources', 'fonts', 'SwipeRaceDemo.ttf'), 20)
         self.centro = PANTALLA_ANCHO/2
         self.color = BLANCO
 

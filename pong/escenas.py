@@ -1,9 +1,9 @@
 import os
 import pygame as pg
 from pygame import font
-from entidades import Paleta, Bola
+from pong.entidades import Paleta, Bola
 import pygame
-from configuracion import TAMANIO_KEY, FUENTE, NEGRO, PARA_EMPEZAR, PANTALLA_ANCHO, PANTALLA_ALTURA, PANTALLA_MARGEN_LATERAL, BLANCO, ARIAL, ANCHO_LINEA, pantalla_centro_h, JUEGO_FPS, LIMITE_MARCADOR, PALETA_ANCHO, PALETA_ALTO
+from . import TAMANIO_KEY, FUENTE, NEGRO, PARA_EMPEZAR, PANTALLA_ANCHO, PANTALLA_ALTURA, PANTALLA_MARGEN_LATERAL, BLANCO, ANCHO_LINEA, pantalla_centro_h, JUEGO_FPS, LIMITE_MARCADOR, PALETA_ANCHO, PALETA_ALTO
 
 
 class Escena:
@@ -196,8 +196,7 @@ class Partida(Escena):
                 (2, self.jugador2.puntos)), self.marcador.posicion)
 
             # pintamos la red
-            pygame.draw.line(self.pantalla, BLANCO, (pantalla_centro_h,
-                             PANTALLA_ALTURA), (pantalla_centro_h, 0), ANCHO_LINEA)
+            self.dibujar_red()
 
             # pintamos las entidades que iteractuan
             pygame.draw.rect(self.pantalla, (BLANCO), self.jugador1)
@@ -206,6 +205,15 @@ class Partida(Escena):
 
             pg.display.flip()
             self.reloj.tick(JUEGO_FPS)
+
+    def dibujar_red(self):
+        y_start = 20
+        y_end = y_start+10
+        while y_end < PANTALLA_ALTURA-20:
+            pygame.draw.line(self.pantalla, BLANCO, (pantalla_centro_h,
+                             y_start), (pantalla_centro_h, y_end), ANCHO_LINEA)
+            y_start = y_end+10
+            y_end = y_start+10
 
 
 class Resumen(Escena):

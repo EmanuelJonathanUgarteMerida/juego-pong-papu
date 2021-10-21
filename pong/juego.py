@@ -1,6 +1,6 @@
 import pygame as pg
-from configuracion import PANTALLA_ANCHO, PANTALLA_ALTURA
-from escenas import Portada, Partida, Resumen
+from . import PANTALLA_ANCHO, PANTALLA_ALTURA
+from pong.escenas import Portada, Partida, Resumen
 
 
 class Juego():

@@ -5,7 +5,7 @@ PARA_EMPEZAR = 'Para empezar presiona la tecla <ESPACIO>'
 JUEGO_FPS = 60
 VELOCIDAD_B = 5
 VELOCIDAD_P = 5
-ANCHO_LINEA = 5
+ANCHO_LINEA = 2
 # constantes pantalla
 PANTALLA_ALTURA = 600
 PANTALLA_ANCHO = 900

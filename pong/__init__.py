@@ -14,7 +14,7 @@ pantalla_centro_h = PANTALLA_ANCHO/2
 pantalla_centro_v = PANTALLA_ALTURA/2
 
 # constantes paleta
-PALETA_ANCHO = 10
+PALETA_ANCHO = 50
 PALETA_ALTO = 40
 
 paleta_centro_v = pantalla_centro_v-PALETA_ALTO/2
@@ -26,7 +26,7 @@ BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
 ARIAL = 'arial'
 
-LIMITE_MARCADOR = 1
+LIMITE_MARCADOR = 8
 
 FUENTE='ARCADE_N.TTF'
 TAMANIO_KEY=70

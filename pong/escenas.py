@@ -70,15 +70,15 @@ class Portada(Escena):
 
             self.pantalla.blit(self.texto_jugador_1, self.texto_jugador_1_rect)
             self.pantalla.blit(self.texto_jugador_2, self.texto_jugador_2_rect)
-			
-			#marcamos la selección de jugadores
+
+            # marcamos la selección de jugadores
             if self.jugadores == 1:
                 pygame.draw.rect(self.pantalla, BLANCO, pygame.Rect(self.texto_jugador_1_rect.x,
                                  self.texto_jugador_1_rect.y, self.texto_jugador_1_rect.width, self.texto_jugador_1_rect.height),  2)
             elif self.jugadores == 2:
                 pygame.draw.rect(self.pantalla, BLANCO, pygame.Rect(self.texto_jugador_2_rect.x,
                                  self.texto_jugador_2_rect.y, self.texto_jugador_2_rect.width, self.texto_jugador_2_rect.height),  2)
-								 
+
             pg.display.flip()
 
 
@@ -106,11 +106,20 @@ class Partida(Escena):
         self.marcador = Marcador()
 
     def colision_paleta(self):
-        if self.jugador1.colliderect(self.bola) or self.jugador2.colliderect(self.bola):
+        if self.bola.colliderect(self.jugador1) or self.bola.colliderect(self.jugador2):
             self.bola.velocidad_x = -self.bola.velocidad_x
             pg.mixer.music.load(os.path.join(
                 'resources', 'music', 'contacto.mp3'))
             pg.mixer.music.play()
+
+    def colision_bola_pelota(self):
+        if self.bola.colliderect(self.jugador1):
+            if self.bola.left - self.jugador1.right <= 0:
+                print('choca por la izquierda')
+            elif self.bola.bottom - self.jugador1.top <= 0:
+                print('choca por abajo')
+            elif self.bola.top - self.jugador1.bottom <= 0:
+                print('choca por arriba')
 
     def colision_bordes(self):
         if self.bola.y >= PANTALLA_ALTURA-self.bola.height or self.bola.y <= 0:
@@ -135,7 +144,7 @@ class Partida(Escena):
             f'Ha ganado jugador {jugador}', True, BLANCO)
 
     def bucle_principal(self):
-        alguiengana=False
+        alguiengana = False
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -143,8 +152,8 @@ class Partida(Escena):
                 elif event.type == pg.KEYDOWN:
                     if alguiengana and event.key == pg.K_SPACE:
                         self.inicializar()
-                        alguiengana=False
-						
+                        alguiengana = False
+
             if not alguiengana:
                 # hacemos que se muevan las entidades
                 self.jugador1.muevete()
@@ -152,18 +161,20 @@ class Partida(Escena):
                 self.bola.muevete()
 
                 if self.jugador1.puntos == LIMITE_MARCADOR or self.jugador2.puntos == LIMITE_MARCADOR:
-                    self.bola.center=(PANTALLA_ANCHO/2,PANTALLA_ALTURA/2)
-                    alguiengana=True
+                    self.bola.center = (PANTALLA_ANCHO/2, PANTALLA_ALTURA/2)
+                    alguiengana = True
 
                 # comprobamos las coliciones
-                self.colision_paleta()
+                # self.colision_paleta()
+                self.colision_bola_pelota()
                 self.colision_bordes()
 
             # pintamos el fondo
             #self.pantalla.blit(self.fondo, self.fondo_rect)
             self.pantalla.fill(NEGRO)
             if alguiengana:
-                self.pantalla.blit(self.marcador.volver_jugar(),self.marcador.posicion_rect)
+                self.pantalla.blit(self.marcador.volver_jugar(),
+                                   self.marcador.posicion_rect)
             # pintamos marcador
             self.pantalla.blit(self.marcador.pintar(
                 (1, self.jugador1.puntos)), self.marcador.posicion_rect)
@@ -190,8 +201,9 @@ class Partida(Escena):
             y_start = y_end+10
             y_end = y_start+10
 
+
 class Marcador:
-    posicion_rect=(0,0)
+    posicion_rect = (0, 0)
     margen_sup = 10
     margen_hor = 20
 
@@ -203,16 +215,20 @@ class Marcador:
     def pintar(self, jugador):
         texto = self.fuente.render(str(jugador[1]), True, BLANCO)
         if jugador[0] == 1:
-            self.posicion_rect=texto.get_rect()
-            self.posicion_rect.topright=(self.centro-self.margen_hor,self.margen_sup)
+            self.posicion_rect = texto.get_rect()
+            self.posicion_rect.topright = (
+                self.centro-self.margen_hor, self.margen_sup)
         elif jugador[0] == 2:
-            self.posicion_rect=texto.get_rect()
-            self.posicion_rect.topleft=(self.centro+self.margen_hor,self.margen_sup)
+            self.posicion_rect = texto.get_rect()
+            self.posicion_rect.topleft = (
+                self.centro+self.margen_hor, self.margen_sup)
         return texto
 
     def volver_jugar(self):
-        f=pg.font.Font(os.path.join('resources', 'fonts', FUENTE), 16)
-        texto = f.render('Presiona <ESPACIO> para volver a jugar',True,BLANCO)
-        self.posicion_rect=texto.get_rect()
-        self.posicion_rect.midbottom=(self.centro,PANTALLA_ALTURA-self.margen_sup)
+        f = pg.font.Font(os.path.join('resources', 'fonts', FUENTE), 16)
+        texto = f.render(
+            'Presiona <ESPACIO> para volver a jugar', True, BLANCO)
+        self.posicion_rect = texto.get_rect()
+        self.posicion_rect.midbottom = (
+            self.centro, PANTALLA_ALTURA-self.margen_sup)
         return texto

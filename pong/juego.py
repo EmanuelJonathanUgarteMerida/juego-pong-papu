@@ -1,6 +1,6 @@
 import pygame as pg
 from . import PANTALLA_ANCHO, PANTALLA_ALTURA
-from pong.escenas import Portada, Partida, Resumen
+from pong.escenas import Portada, Partida
 
 
 class Juego():
@@ -12,8 +12,7 @@ class Juego():
             (PANTALLA_ANCHO, PANTALLA_ALTURA))
         self.escenas = [
             Portada(self.pantalla),
-            Partida(self.pantalla),
-            Resumen(self.pantalla)
+            Partida(self.pantalla)
         ]
 
     def jugar(self):

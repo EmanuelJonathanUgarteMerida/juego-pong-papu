@@ -1,5 +1,5 @@
 import pygame as pg
-from . import BOLA_DIMEN, PALETA_ANCHO, PALETA_ALTO, PANTALLA_ALTURA, VELOCIDAD_B, VELOCIDAD_P
+from . import BOLA_DIMEN, PALETA_ANCHO, PALETA_ALTO, PANTALLA_ALTURA,PANTALLA_ANCHO, VELOCIDAD_B, VELOCIDAD_P
 
 
 class Bola (pg.Rect):
@@ -11,11 +11,7 @@ class Bola (pg.Rect):
         self.iniciar()
 
     def iniciar(self):
-        pantalla = pg.display.get_surface()
-        (ancho, alto) = pantalla.get_size()
-
-        self.x = ancho/2-self.width/2
-        self.y = alto/2-self.height/2
+        self.center=(PANTALLA_ANCHO/2,PANTALLA_ALTURA/2)
 
         #self.velocidad_x = random.randint(-3, 3)
         self.velocidad_x = -self.velocidad_x

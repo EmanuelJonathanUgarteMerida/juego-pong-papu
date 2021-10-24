@@ -1,9 +1,12 @@
 import os
 import pygame as pg
-from pygame import font
+from pygame import Rect, font
+from pygame.draw import circle
+from pygame.mixer import pause
 from pong.entidades import Paleta, Bola
 import pygame
-from . import TAMANIO_KEY, FUENTE, NEGRO, PARA_EMPEZAR, PANTALLA_ANCHO, PANTALLA_ALTURA, PANTALLA_MARGEN_LATERAL, BLANCO, ANCHO_LINEA, pantalla_centro_h, JUEGO_FPS, LIMITE_MARCADOR, PALETA_ANCHO, PALETA_ALTO
+from . import BOLA_DIMEN, CONTACTO, CUENTA_ATRAS, FIN_PARTIDA, GRIS, INICIAR_PARTIDA, MARCA_PUNTO, REBOTE, SELECCION_JUGADOR, TAMANIO_KEY, FUENTE, NEGRO, PARA_EMPEZAR, PANTALLA_ANCHO, PANTALLA_ALTURA, PANTALLA_MARGEN_LATERAL, BLANCO, ANCHO_LINEA, VELOCIDAD_B, VOLVER_EMPEZAR, pantalla_centro_h, JUEGO_FPS, LIMITE_MARCADOR, PALETA_ANCHO, PALETA_ALTO
+import pong.utilidades as util
 
 
 class Escena:
@@ -14,36 +17,19 @@ class Escena:
     def bucle_principal(self):
         pass
 
-
 class Portada(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
-        self.texto_jugador_2 = ''
         self.jugadores = 0
-        self.logo = pg.image.load(os.path.join(
-            'resources', 'images', 'logo.png'))
-        self.logo = pg.transform.scale(
-            self.logo, (PANTALLA_ANCHO, PANTALLA_ALTURA))
-        self.logo.get_rect().center = (PANTALLA_ANCHO/2, PANTALLA_ALTURA/2)
-
         fuente = pg.font.Font(os.path.join(
             'resources', 'fonts', FUENTE), 50)
-        self.texto_jugador_1 = fuente.render('1', True, 'white')
-        self.texto_jugador_1_rect = self.texto_jugador_1.get_rect()
-        self.texto_jugador_1_rect.midright = (
-            PANTALLA_ANCHO/2-50, PANTALLA_ALTURA/2)
-
-        self.texto_jugador_2 = fuente.render('2', True, 'white')
-        self.texto_jugador_2_rect = self.texto_jugador_2.get_rect()
-        self.texto_jugador_2_rect.midleft = (
-            PANTALLA_ANCHO/2+50, PANTALLA_ALTURA/2)
-
-        fuente = pg.font.Font(os.path.join(
-            'resources', 'fonts', FUENTE), 10)
-        self.texto_inicio = fuente.render(PARA_EMPEZAR, True, 'green')
-        self.texto_inicio_rect = self.texto_inicio.get_rect()
-        self.texto_inicio_rect.midbottom = (
-            PANTALLA_ANCHO/2, PANTALLA_ALTURA-20)
+        self.uno = util.texto_pantalla(fuente, '1', BLANCO)
+        self.uno[1].midright = (PANTALLA_ANCHO/2-50, PANTALLA_ALTURA/2)
+        self.dos = util.texto_pantalla(fuente, '2', BLANCO)
+        self.dos[1].midleft = (PANTALLA_ANCHO/2+50, PANTALLA_ALTURA/2)
+        fuente = pg.font.Font(os.path.join('resources', 'fonts', FUENTE), 10)
+        self.texto_inicio = util.texto_pantalla(fuente, PARA_EMPEZAR, BLANCO)
+        self.texto_inicio[1].midbottom = (PANTALLA_ANCHO/2, PANTALLA_ALTURA-20)
 
     def bucle_principal(self):
         while True:
@@ -53,31 +39,32 @@ class Portada(Escena):
                 elif event.type == pg.KEYDOWN:
                     if event.key == pg.K_SPACE:
                         if self.jugadores != 0:
+                            util.cargar_sonido(INICIAR_PARTIDA)
                             return
                     elif event.key in (pg.K_1, pg.K_KP1):
                         self.jugadores = 1
+                        util.cargar_sonido(SELECCION_JUGADOR)
                     elif event.key in (pg.K_KP2, pg.K_KP2):
                         self.jugadores = 2
+                        util.cargar_sonido(SELECCION_JUGADOR)
 
             # pintamos el fondo
-            self.pantalla.fill(NEGRO)
-
-            # pintamos el logo
-            #self.pantalla.blit(self.logo, self.logo.get_rect())
+            self.pantalla.fill(GRIS)
 
             # pintamos los textos (como empezar y selección de jugadores)
-            self.pantalla.blit(self.texto_inicio, self.texto_inicio_rect)
+            self.pantalla.blit(self.texto_inicio[0], self.texto_inicio[1])
 
-            self.pantalla.blit(self.texto_jugador_1, self.texto_jugador_1_rect)
-            self.pantalla.blit(self.texto_jugador_2, self.texto_jugador_2_rect)
+            self.pantalla.blit(self.uno[0], self.uno[1])
+            self.pantalla.blit(self.dos[0], self.dos[1])
 
             # marcamos la selección de jugadores
             if self.jugadores == 1:
-                pygame.draw.rect(self.pantalla, BLANCO, pygame.Rect(self.texto_jugador_1_rect.x,
-                                 self.texto_jugador_1_rect.y, self.texto_jugador_1_rect.width, self.texto_jugador_1_rect.height),  2)
+                margen_recuadro = 20
+                pygame.draw.rect(self.pantalla, BLANCO, pygame.Rect(self.uno[1].x-margen_recuadro/2,
+                                 self.uno[1].y-margen_recuadro/2, self.uno[1].width+margen_recuadro, self.uno[1].height+margen_recuadro),  2, 3)
             elif self.jugadores == 2:
-                pygame.draw.rect(self.pantalla, BLANCO, pygame.Rect(self.texto_jugador_2_rect.x,
-                                 self.texto_jugador_2_rect.y, self.texto_jugador_2_rect.width, self.texto_jugador_2_rect.height),  2)
+                pygame.draw.rect(self.pantalla, BLANCO, pygame.Rect(self.dos[1].x-margen_recuadro/2,
+                                 self.dos[1].y-margen_recuadro/2, self.dos[1].width+margen_recuadro, self.dos[1].height+margen_recuadro),  2, 5)
 
             pg.display.flip()
 
@@ -85,15 +72,9 @@ class Portada(Escena):
 class Partida(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
-        self.fondo = pg.image.load(os.path.join(
-            'resources', 'images', 'fondo.jpg'))
-        self.fondo = pg.transform.scale(
-            self.fondo, (PANTALLA_ANCHO, PANTALLA_ALTURA))
-        self.fondo_rect = self.fondo.get_rect()
-        self.fondo_rect.center = (PANTALLA_ANCHO/2, PANTALLA_ALTURA/2)
         self.fuente = pg.font.Font(os.path.join(
             'resources', 'fonts', FUENTE), 20)
-
+        self. cuenta_atras = CUENTA_ATRAS
         self.inicializar()
 
     def inicializar(self):
@@ -104,47 +85,40 @@ class Partida(Escena):
 
         self.bola = Bola()
         self.marcador = Marcador()
+        self.pausar = False
 
     def colision_paleta(self):
         if self.bola.colliderect(self.jugador1) or self.bola.colliderect(self.jugador2):
             self.bola.velocidad_x = -self.bola.velocidad_x
-            pg.mixer.music.load(os.path.join(
-                'resources', 'music', 'contacto.mp3'))
-            pg.mixer.music.play()
-
-    def colision_bola_pelota(self):
-        if self.bola.colliderect(self.jugador1):
-            if self.bola.left - self.jugador1.right <= 0:
-                print('choca por la izquierda')
-            elif self.bola.bottom - self.jugador1.top <= 0:
-                print('choca por abajo')
-            elif self.bola.top - self.jugador1.bottom <= 0:
-                print('choca por arriba')
+            util.cargar_sonido(CONTACTO)
 
     def colision_bordes(self):
         if self.bola.y >= PANTALLA_ALTURA-self.bola.height or self.bola.y <= 0:
             self.bola.velocidad_y = -self.bola.velocidad_y
+            util.cargar_sonido(REBOTE)
         elif self.bola.x <= 0:
+            self.bola.velocidad_x = -self.bola.velocidad_x
             self.comprobar_colision(self.jugador2)
         elif self.bola.x >= PANTALLA_ANCHO-self.bola.width:
+            self.bola.velocidad_x = -self.bola.velocidad_x
             self.comprobar_colision(self.jugador1)
 
     def comprobar_colision(self, jugador):
         jugador.puntos += 1
         if jugador.puntos == LIMITE_MARCADOR:
-            self.texto_ganador(jugador.nombre)
+            texto = util.texto_pantalla(self.fuente, jugador.nombre, BLANCO)
+            self.pantalla.blit(texto[0], texto[1])
+            util.cargar_sonido(FIN_PARTIDA)
         else:
-            pg.mixer.music.load(os.path.join(
-                'resources', 'music', 'pierde_punto.mp3'))
-            pg.mixer.music.play()
+            util.cargar_sonido(MARCA_PUNTO)
         self.bola.iniciar()
-
-    def texto_ganador(self, jugador):
-        self.ganador = self.fuente.render(
-            f'Ha ganado jugador {jugador}', True, BLANCO)
+        self.jugador2.midright = (self.jugador2.right, PANTALLA_ALTURA/2)
+        self.jugador1.midleft = (self.jugador1.x, PANTALLA_ALTURA/2)
+        self.pausar = True
 
     def bucle_principal(self):
         alguiengana = False
+        contar = 3
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -154,48 +128,64 @@ class Partida(Escena):
                         self.inicializar()
                         alguiengana = False
 
-            if not alguiengana:
+            # pintamos el fondo
+            self.pantalla.fill(GRIS)
+
+            if alguiengana:
+                txt = self.marcador.volver_jugar()
+                self.pantalla.blit(txt[0], txt[1])
+                #ganador = self.marcador.ganador()
+                #ganador_rect = ganador.get_rect()
+
+            else:
                 # hacemos que se muevan las entidades
                 self.jugador1.muevete()
                 self.jugador2.muevete()
                 self.bola.muevete()
 
-                if self.jugador1.puntos == LIMITE_MARCADOR or self.jugador2.puntos == LIMITE_MARCADOR:
+                if LIMITE_MARCADOR in (self.jugador1.puntos, self.jugador2.puntos):
                     self.bola.center = (PANTALLA_ANCHO/2, PANTALLA_ALTURA/2)
                     alguiengana = True
 
                 # comprobamos las coliciones
-                # self.colision_paleta()
-                self.colision_bola_pelota()
+                self.colision_paleta()
                 self.colision_bordes()
-
-            # pintamos el fondo
-            #self.pantalla.blit(self.fondo, self.fondo_rect)
-            self.pantalla.fill(NEGRO)
-            if alguiengana:
-                self.pantalla.blit(self.marcador.volver_jugar(),
-                                   self.marcador.posicion_rect)
             # pintamos marcador
-            self.pantalla.blit(self.marcador.pintar(
-                (1, self.jugador1.puntos)), self.marcador.posicion_rect)
-            self.pantalla.blit(self.marcador.pintar(
-                (2, self.jugador2.puntos)), self.marcador.posicion_rect)
+            puntos = self.marcador.pintar((1, self.jugador1.puntos))
+            self.pantalla.blit(puntos[0], puntos[1])
+
+            puntos = self.marcador.pintar((2, self.jugador2.puntos))
+            self.pantalla.blit(puntos[0], puntos[1])
 
             # pintamos la red
             self.dibujar_red()
-
             # pintamos las entidades que iteractuan
+            pygame.draw.circle(self.pantalla, (BLANCO),
+                               (self.bola.x+BOLA_DIMEN/2, self.bola.y+BOLA_DIMEN/2), BOLA_DIMEN/2)
             pygame.draw.rect(self.pantalla, (BLANCO), self.jugador1)
             pygame.draw.rect(self.pantalla, (BLANCO), self.jugador2)
-            pygame.draw.rect(self.pantalla, (BLANCO), self.bola)
+            #pygame.draw.rect(self.pantalla, (BLANCO), self.bola)
 
+            if self.pausar:
+                c = util.texto_pantalla(self.fuente, f'{contar}', BLANCO)
+                c[1].center = (PANTALLA_ANCHO/2, PANTALLA_ALTURA/2)
+                self.pantalla.blit(c[0], c[1])
+                contar -= 1
+                if contar == 0:
+                    self.pausar = False
+                    contar = 3
+                else:
+                    pg.time.delay(1000)
+            else:
+                pass
             pg.display.flip()
             self.reloj.tick(JUEGO_FPS)
 
     def dibujar_red(self):
         y_start = 20
         y_end = y_start+10
-        while y_end < PANTALLA_ALTURA-20:
+        puntos = PANTALLA_ALTURA-20
+        while y_end < puntos:
             pygame.draw.line(self.pantalla, BLANCO, (pantalla_centro_h,
                              y_start), (pantalla_centro_h, y_end), ANCHO_LINEA)
             y_start = y_end+10
@@ -213,22 +203,20 @@ class Marcador:
         self.centro = PANTALLA_ANCHO/2
 
     def pintar(self, jugador):
-        texto = self.fuente.render(str(jugador[1]), True, BLANCO)
+        texto = util.texto_pantalla(self.fuente, str(jugador[1]), BLANCO)
         if jugador[0] == 1:
-            self.posicion_rect = texto.get_rect()
-            self.posicion_rect.topright = (
-                self.centro-self.margen_hor, self.margen_sup)
+            texto[1].topright = (self.centro-self.margen_hor, self.margen_sup)
         elif jugador[0] == 2:
-            self.posicion_rect = texto.get_rect()
-            self.posicion_rect.topleft = (
-                self.centro+self.margen_hor, self.margen_sup)
+            texto[1].topleft = (self.centro+self.margen_hor, self.margen_sup)
         return texto
 
     def volver_jugar(self):
         f = pg.font.Font(os.path.join('resources', 'fonts', FUENTE), 16)
-        texto = f.render(
-            'Presiona <ESPACIO> para volver a jugar', True, BLANCO)
-        self.posicion_rect = texto.get_rect()
-        self.posicion_rect.midbottom = (
-            self.centro, PANTALLA_ALTURA-self.margen_sup)
+        texto = util.texto_pantalla(f, VOLVER_EMPEZAR, BLANCO)
+        texto[1].midbottom = (self.centro, PANTALLA_ALTURA-self.margen_sup)
         return texto
+
+    def ganador(self):
+        f = pg.font.Font(os.path.join('resources', 'fonts', FUENTE), 16)
+        gana = f.render('Jugador Ganador', True, BLANCO)
+        return gana
